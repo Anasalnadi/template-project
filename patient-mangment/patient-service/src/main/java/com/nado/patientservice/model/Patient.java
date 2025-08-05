@@ -17,7 +17,7 @@ public class Patient {
     private String fullName;
 
     @NotNull
-    @Email
+    @Email 
     @Column(unique=true)
     private String email;
 

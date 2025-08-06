@@ -3,10 +3,13 @@ package com.nado.patientservice.controller;
 import com.nado.patientservice.dto.ApiResponse;
 import com.nado.patientservice.dto.PatientRequestDTO;
 import com.nado.patientservice.dto.PatientResponseDTO;
+import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.service.PatientService;
 import jakarta.validation.Valid;
+import jakarta.validation.groups.Default;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -41,4 +44,25 @@ public class PatientController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
 
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<PatientResponseDTO>> updatePatient(@PathVariable int id,
+                                                                         @Validated({Default.class}) @RequestBody PatientRequestDTO patientRequestDTO){
+
+        PatientResponseDTO responseDTO = patientService.updatePatient(id,patientRequestDTO);
+
+        ApiResponse<PatientResponseDTO> response = new ApiResponse<>(HttpStatus.OK.value(),true,responseDTO);
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity deletePatient(@PathVariable int id){
+
+        patientService.deletePatient(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
 }

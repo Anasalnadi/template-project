@@ -1,0 +1,12 @@
+#Put request to update existing patient
+
+PUT http://localhost:4000/patients/4
+Content-Type: application/json
+
+{
+  "fullName": "anas alnadi",
+  "email": "anas-update@test.com",
+  "address": "Zarqa / jordan",
+  "barthDate": "1995-09-14"
+
+}

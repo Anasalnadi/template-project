@@ -5,6 +5,8 @@ import com.nado.patientservice.dto.PatientRequestDTO;
 import com.nado.patientservice.dto.PatientResponseDTO;
 import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.service.PatientService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/patients")
+@Tag(name = "Patient",description = "Rest API for manging Patient")
 public class PatientController {
 
     private final PatientService patientService;
@@ -25,6 +28,7 @@ public class PatientController {
     }
 
     @GetMapping
+    @Operation(summary = "Get Patients",description = "Get API for get all patients")
     public ResponseEntity<ApiResponse<List<PatientResponseDTO>>> getPatients(){
         List<PatientResponseDTO> responseDTO = patientService.getPatients();
 
@@ -35,6 +39,7 @@ public class PatientController {
     }
 
     @PostMapping
+    @Operation(summary = "Create Patient")
     public ResponseEntity<ApiResponse<PatientResponseDTO>> createPatient(@Valid @RequestBody PatientRequestDTO patientRequestDTO){
 
         PatientResponseDTO responseDTO = patientService.createPatient(patientRequestDTO);
@@ -46,6 +51,7 @@ public class PatientController {
     }
 
     @PutMapping("/{id}")
+    @Operation(summary = "Update Patient")
     public ResponseEntity<ApiResponse<PatientResponseDTO>> updatePatient(@PathVariable int id,
                                                                          @Validated({Default.class}) @RequestBody PatientRequestDTO patientRequestDTO){
 
@@ -58,6 +64,7 @@ public class PatientController {
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary = "Delete Patient")
     public ResponseEntity deletePatient(@PathVariable int id){
 
         patientService.deletePatient(id);

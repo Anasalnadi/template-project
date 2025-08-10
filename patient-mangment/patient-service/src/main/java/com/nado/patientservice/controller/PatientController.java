@@ -3,7 +3,6 @@ package com.nado.patientservice.controller;
 import com.nado.patientservice.dto.ApiResponse;
 import com.nado.patientservice.dto.PatientRequestDTO;
 import com.nado.patientservice.dto.PatientResponseDTO;
-import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.service.PatientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,27 +26,32 @@ public class PatientController {
         this.patientService = patientService;
     }
 
+    @GetMapping("/{id}")
+    @Operation(summary = "Get Patient",description = "Get API for get patient by ID")
+    public ResponseEntity<ApiResponse<PatientResponseDTO>> getPatientById(@PathVariable int id){
+
+        PatientResponseDTO responseDTO = patientService.getPatientById(id);
+
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(),true,responseDTO));
+
+    }
+
     @GetMapping
     @Operation(summary = "Get Patients",description = "Get API for get all patients")
     public ResponseEntity<ApiResponse<List<PatientResponseDTO>>> getPatients(){
         List<PatientResponseDTO> responseDTO = patientService.getPatients();
 
-        ApiResponse<List<PatientResponseDTO>> response = new ApiResponse<>(HttpStatus.OK.value(), true, responseDTO);
-
-        return ResponseEntity.ok().body(response);
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), true, responseDTO));
 
     }
 
     @PostMapping
     @Operation(summary = "Create Patient")
     public ResponseEntity<ApiResponse<PatientResponseDTO>> createPatient(@Valid @RequestBody PatientRequestDTO patientRequestDTO){
-
         PatientResponseDTO responseDTO = patientService.createPatient(patientRequestDTO);
 
-        ApiResponse<PatientResponseDTO> response = new ApiResponse<>(HttpStatus.CREATED.value(),true,responseDTO);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.of(HttpStatus.CREATED.value(), true, responseDTO));
     }
 
     @PutMapping("/{id}")
@@ -57,15 +61,13 @@ public class PatientController {
 
         PatientResponseDTO responseDTO = patientService.updatePatient(id,patientRequestDTO);
 
-        ApiResponse<PatientResponseDTO> response = new ApiResponse<>(HttpStatus.OK.value(),true,responseDTO);
-
-        return ResponseEntity.status(HttpStatus.OK).body(response);
-
+        return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), true, responseDTO));
     }
+
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete Patient")
-    public ResponseEntity deletePatient(@PathVariable int id){
+    public ResponseEntity<Void> deletePatient(@PathVariable int id){
 
         patientService.deletePatient(id);
 

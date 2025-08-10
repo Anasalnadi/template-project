@@ -12,6 +12,11 @@ public class ApiResponse<T> {
         this.data = data;
     }
 
+    // Static factory method for cleaner calls
+    public static <T> ApiResponse<T> of(int status, boolean success, T data) {
+        return new ApiResponse<>(status, success, data);
+    }
+
     public int getStatus() {
         return status;
     }

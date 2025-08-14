@@ -5,21 +5,21 @@ import com.nado.patientservice.dto.PatientRequestDTO;
 import com.nado.patientservice.dto.PatientResponseDTO;
 import com.nado.patientservice.exception.custom.EmailAlreadyExistsException;
 import com.nado.patientservice.exception.custom.PatientNotFoundException;
-import com.nado.patientservice.mapper.PatientMapper;
+import com.nado.patientservice.mapper.PatientMapperInterface;
 import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.repository.PatientRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
 public class PatientService {
 
     private final PatientRepository patientRepository;
+    private final PatientMapperInterface patientMapper;
 
-    public PatientService(PatientRepository patientRepository) {
+    public PatientService(PatientRepository patientRepository, PatientMapperInterface patientMapper) {
         this.patientRepository = patientRepository;
+        this.patientMapper = patientMapper;
     }
 
     public PatientResponseDTO getPatientById(int id){
@@ -27,14 +27,14 @@ public class PatientService {
         Patient patient= patientRepository.findById(id).orElseThrow(
                 () -> new PatientNotFoundException(String.format(ErrorMessage.PATIENT_NOT_FOUND_BY_ID,id)));
 
-        return PatientMapper.toDTO(patient);
+        return patientMapper.toDTO(patient);
     }
 
     public List<PatientResponseDTO> getPatients(){
         List<Patient> patients = patientRepository.findAll();
 
         return patients.stream()
-                .map(PatientMapper::toDTO)
+                .map(patientMapper::toDTO)
                 .toList();
 
     }
@@ -45,12 +45,13 @@ public class PatientService {
             throw new EmailAlreadyExistsException(String.format(ErrorMessage.EMAIL_ALREADY_EXISTS,patientRequestDTO.getEmail()));
         }
 
-        Patient newPatient = patientRepository.save(PatientMapper.toModel(patientRequestDTO));
+        Patient newPatient = patientRepository.save(patientMapper.toModel(patientRequestDTO));
 
-        return PatientMapper.toDTO(newPatient);
+        return patientMapper.toDTO(newPatient);
     }
 
     public PatientResponseDTO updatePatient(int id, PatientRequestDTO patientRequestDTO){
+
         if(patientRepository.existsByEmailAndIdNot(patientRequestDTO.getEmail(),id)){
             throw new EmailAlreadyExistsException(String.format(ErrorMessage.EMAIL_ALREADY_EXISTS,patientRequestDTO.getEmail()));
         }
@@ -58,16 +59,12 @@ public class PatientService {
         Patient exsistingPatient= patientRepository.findById(id).orElseThrow(
                 ()->new PatientNotFoundException(String.format(ErrorMessage.PATIENT_NOT_FOUND_BY_ID,id)));
 
-        //Patient patientUpdate= PatientMapper.toModel(patientRequestDTO);
-        exsistingPatient.setFullName(patientRequestDTO.getFullName());
-        exsistingPatient.setEmail(patientRequestDTO.getEmail());
-        exsistingPatient.setAddress(patientRequestDTO.getAddress());
-        exsistingPatient.setDateOfBirth(LocalDate.parse(patientRequestDTO.getBarthDate()));
+        // **Update dynamically** only non-null fields
+        patientMapper.updatePatientFromDTO(patientRequestDTO, exsistingPatient);
+
 
         Patient update = patientRepository.save(exsistingPatient);
-        return PatientMapper.toDTO(update);
-
-
+        return patientMapper.toDTO(update);
     }
 
     public void deletePatient(int id) {

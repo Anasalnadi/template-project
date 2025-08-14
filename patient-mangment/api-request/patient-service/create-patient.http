@@ -4,9 +4,9 @@ POST http://localhost:4000/patients
 Content-Type: application/json
 
 {
-  "fullName": "anas alnadi",
-  "email": "anas@test.com",
+  "fullName": "Aya aladwan",
+  "email": "aya@test.com",
   "address": "amman - jordan",
-  "barthDate": "1995-09-14"
+  "barthDate": "2000-09-14"
 
 }

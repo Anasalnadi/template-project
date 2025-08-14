@@ -13,21 +13,15 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @NotNull
     private String fullName;
 
-    @NotNull
-    @Email 
     @Column(unique=true)
     private String email;
 
-    @NotNull
     private String address;
 
-    @NotNull
     private LocalDate dateOfBirth;
 
-    @NotNull
     private LocalDate registerDate;
 
     public int getId() {

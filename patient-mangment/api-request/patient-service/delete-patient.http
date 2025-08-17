@@ -1,0 +1,3 @@
+#Delete request to delete existing patient
+
+DELETE http://localhost:4000/patients/4

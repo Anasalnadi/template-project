@@ -1,0 +1,12 @@
+#Post request to create new patient
+
+POST http://localhost:4000/patients
+Content-Type: application/json
+
+{
+  "fullName": "Aya aladwan",
+  "email": "aya@test.com",
+  "address": "amman - jordan",
+  "barthDate": "2000-09-14"
+
+}

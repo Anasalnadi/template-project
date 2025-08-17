@@ -1,28 +1,12 @@
-package com.nado.patientservice.model;
+package com.nado.patientservice.dto;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+public class PatientResponseDTO {
 
-import java.time.LocalDate;
-
-@Entity
-public class Patient {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-
     private String fullName;
-
-    @Column(unique=true)
     private String email;
-
     private String address;
-
-    private LocalDate dateOfBirth;
-
-    private LocalDate registerDate;
+    private String dateOfBirth;
 
     public int getId() {
         return id;
@@ -56,19 +40,13 @@ public class Patient {
         this.address = address;
     }
 
-    public LocalDate getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(LocalDate dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public LocalDate getRegisterDate() {
-        return registerDate;
-    }
 
-    public void setRegisterDate(LocalDate registerDate) {
-        this.registerDate = registerDate;
-    }
 }

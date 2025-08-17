@@ -6,6 +6,7 @@ import com.nado.patientservice.dto.PatientResponseDTO;
 import com.nado.patientservice.exception.custom.EmailAlreadyExistsException;
 import com.nado.patientservice.exception.custom.PatientNotFoundException;
 import com.nado.patientservice.grpc.BillingServiceGrpcClient;
+import com.nado.patientservice.kafka.KafkaProducer;
 import com.nado.patientservice.mapper.PatientMapperInterface;
 import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.repository.PatientRepository;
@@ -18,11 +19,13 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final PatientMapperInterface patientMapper;
     private final BillingServiceGrpcClient billingServiceGrpcClient;
+    private final KafkaProducer kafkaProducer;
 
-    public PatientService(PatientRepository patientRepository, PatientMapperInterface patientMapper, BillingServiceGrpcClient billingServiceGrpcClient) {
+    public PatientService(PatientRepository patientRepository, PatientMapperInterface patientMapper, BillingServiceGrpcClient billingServiceGrpcClient, KafkaProducer kafkaProducer) {
         this.patientRepository = patientRepository;
         this.patientMapper = patientMapper;
         this.billingServiceGrpcClient = billingServiceGrpcClient;
+        this.kafkaProducer = kafkaProducer;
     }
 
     public PatientResponseDTO getPatientById(int id){
@@ -51,6 +54,8 @@ public class PatientService {
         Patient newPatient = patientRepository.save(patientMapper.toModel(patientRequestDTO));
 
         billingServiceGrpcClient.createBillingAccount(String.valueOf(newPatient.getId()),newPatient.getFullName(),newPatient.getEmail());
+
+        kafkaProducer.sendEvent(newPatient);
 
         return patientMapper.toDTO(newPatient);
     }

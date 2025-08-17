@@ -1,23 +1,25 @@
 package com.nado.patientservice.dto;
 
+import com.nado.patientservice.dto.validators.OnCreate;
+import com.nado.patientservice.dto.validators.OnUpdate;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 public class PatientRequestDTO {
 
-  @NotBlank(message = "the full name is required ")
-  @Size(max = 100, message = "full name cannot be exceed 100 characters")
+  @NotBlank(message = "the full name is required ", groups = OnCreate.class)
+  @Size(max = 100, message = "full name cannot be exceed 100 characters",groups = {OnCreate.class, OnUpdate.class})
   private String fullName;
 
-  @NotBlank(message = "the email is required ")
-  @Email(message = "Email should be valid")
+  @NotBlank(message = "the email is required ",groups = OnCreate.class)
+  @Email(message = "Email should be valid",groups = {OnCreate.class, OnUpdate.class})
   private String email;
 
-  @NotBlank(message = "the address is required ")
+  @NotBlank(message = "the address is required ", groups = OnCreate.class)
   private String address;
 
-  @NotBlank(message = "the barth date  is required")
+  @NotBlank(message = "the barth date  is required", groups = OnCreate.class)
   private String barthDate;
 
 //    @NotNull(message = "the registered date  is required ")

@@ -5,6 +5,7 @@ import com.nado.patientservice.dto.PatientRequestDTO;
 import com.nado.patientservice.dto.PatientResponseDTO;
 import com.nado.patientservice.exception.custom.EmailAlreadyExistsException;
 import com.nado.patientservice.exception.custom.PatientNotFoundException;
+import com.nado.patientservice.grpc.BillingServiceGrpcClient;
 import com.nado.patientservice.mapper.PatientMapperInterface;
 import com.nado.patientservice.model.Patient;
 import com.nado.patientservice.repository.PatientRepository;
@@ -16,10 +17,12 @@ public class PatientService {
 
     private final PatientRepository patientRepository;
     private final PatientMapperInterface patientMapper;
+    private final BillingServiceGrpcClient billingServiceGrpcClient;
 
-    public PatientService(PatientRepository patientRepository, PatientMapperInterface patientMapper) {
+    public PatientService(PatientRepository patientRepository, PatientMapperInterface patientMapper, BillingServiceGrpcClient billingServiceGrpcClient) {
         this.patientRepository = patientRepository;
         this.patientMapper = patientMapper;
+        this.billingServiceGrpcClient = billingServiceGrpcClient;
     }
 
     public PatientResponseDTO getPatientById(int id){
@@ -46,6 +49,8 @@ public class PatientService {
         }
 
         Patient newPatient = patientRepository.save(patientMapper.toModel(patientRequestDTO));
+
+        billingServiceGrpcClient.createBillingAccount(String.valueOf(newPatient.getId()),newPatient.getFullName(),newPatient.getEmail());
 
         return patientMapper.toDTO(newPatient);
     }

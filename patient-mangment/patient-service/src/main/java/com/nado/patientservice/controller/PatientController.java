@@ -66,7 +66,6 @@ public class PatientController {
         return ResponseEntity.ok(ApiResponse.of(HttpStatus.OK.value(), true, responseDTO));
     }
 
-
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete Patient")
     public ResponseEntity<Void> deletePatient(@PathVariable int id){

@@ -1,3 +1,5 @@
 #Get request to get all patient
 
-GET http://localhost:4000/patients
+#GET http://localhost:4000/patients
+#with gateway --> the port for gateway 4004
+GET http://localhost:4004/api/patients

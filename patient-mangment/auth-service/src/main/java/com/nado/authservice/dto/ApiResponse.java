@@ -1,0 +1,43 @@
+package com.nado.authservice.dto;
+
+public class ApiResponse<T> {
+
+    private int status;
+    private boolean success;
+    private T data;
+
+    public ApiResponse(int status, boolean success, T data) {
+        this.status = status;
+        this.success = success;
+        this.data = data;
+    }
+
+    // Static factory method for cleaner calls
+    public static <T> ApiResponse<T> of(int status, boolean success, T data) {
+        return new ApiResponse<>(status, success, data);
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public boolean getSuccess() {
+        return success;
+    }
+
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public T getData() {
+        return data;
+    }
+
+    public void setData(T data) {
+        this.data = data;
+    }
+}
